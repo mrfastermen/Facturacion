@@ -11,13 +11,22 @@ package conexiondb;
  */
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Vector;
 import javax.swing.JOptionPane;
+import modelo.vo.Empresa;
 
 public class ConexionDB {
+    
+    private static Statement st = null;
+    private static ResultSet rs = null;
+    private static Connection conexion = null;
+    private static PreparedStatement ps = null;
 
     public static Connection GetConnection() {
-        Connection conexion = null;
 
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -38,4 +47,31 @@ public class ConexionDB {
             return conexion;
         }
     }
+    
+    public static Vector<Empresa> leerDatosVector(String consulta){
+        Vector<Empresa> empresa = new Vector<Empresa>();
+        Empresa emp = null;
+        
+        if (conexion == null)
+            GetConnection();
+        try {
+            st = conexion.createStatement();
+            rs = st.executeQuery(consulta);
+            
+            while(rs.next()){
+                emp = new Empresa();
+                emp.setIdempresa(rs.getString(1));
+                emp.setNombre(rs.getString(2));
+                emp.setNit(rs.getString(3));
+                emp.setUsuario_idusuario(rs.getString(4));
+                empresa.add(emp);
+            }
+            st.close();
+            rs.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return empresa;
+    }
+    
 }
