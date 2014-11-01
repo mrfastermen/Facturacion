@@ -8,7 +8,6 @@ package facturacion;
 
 import diseño.VentanaLogin;
 import diseño.VentanaPrincipal;
-import java.awt.Dialog;
 
 /**
  *
