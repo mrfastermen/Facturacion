@@ -5,6 +5,7 @@
  */
 package diseño;
 
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -18,6 +19,7 @@ import java.util.Vector;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import modelo.vo.Empresa;
 
 /**
@@ -34,7 +36,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JList jList1;
+    public javax.swing.JList jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -50,9 +52,13 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     // End of variables declaration   
 
     Connection conn;
+    private String idempresa;
 
     public VentanaPrincipal() {
         initComponents();
+
+        jButton3.setToolTipText("Actualizar Base de Datos");
+        jButton1.setToolTipText("Administrador");
 
         String mostar = "SELECT idempresa, nombre, nit, usuario_idusuario FROM empresa";
 
@@ -102,12 +108,13 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Traditional Arabic", 1, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 0, 204));
+        //Nombre de la tienda
         jLabel1.setText("TIENDA LA 22");
 
         jButton1.setBackground(new java.awt.Color(51, 0, 204));
         jButton1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jButton1.setForeground(new java.awt.Color(51, 204, 255));
-        jButton1.setText("ADMINISTRADOR");
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/admin.png"))); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -130,8 +137,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -190,7 +197,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 398, Short.MAX_VALUE)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE)
                         .addContainerGap())
         );
 
@@ -266,7 +273,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(64, 64, 64)
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(211, Short.MAX_VALUE))
+                        .addContainerGap(208, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("AGREGAR PROVEEDOR", jPanel4);
@@ -308,7 +315,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel3Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel2)
@@ -348,12 +355,18 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         return retValue;
     }
 
+    public String getIdempresa() {
+        return this.idempresa;
+    }
+
+//llama ventana de administrador
     public void jButton1ActionPerformed(ActionEvent e) {
         VentanaAdministrador ventadm = new VentanaAdministrador();
         ventadm.setVisible(true);
         ventadm.setResizable(false);
         ventadm.setLocationRelativeTo(null);
     }
+//boton actualizar para mostrar proveedores
 
     public void jButton3ActionPerformed(ActionEvent e) {
         String mostar = "SELECT idempresa, nombre, nit, usuario_idusuario FROM empresa";
@@ -366,7 +379,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         }
         jList1.setModel(ml);
         jList1.requestFocus();
+        
+        totalFactura();
     }
+// boton agregar proveedor
 
     public void jButton2ActionPerformed(ActionEvent e) {
 
@@ -395,8 +411,26 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         }
     }
 
+    public void total() {
+        String total = "SELECT SUM(valor_factura) AS 'total'\n"
+                + "FROM factura";
+
+        try {
+            conn = conexiondb.ConexionDB.GetConnection();
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery(total);
+            rs.first();
+            jTextField1.setText("$ " + rs.getString("total"));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }
+
     public void totalFactura() {
-        String sql = "SELECT nombre FROM empresa";
+        String sql = "SELECT empresa.nombre AS 'NOMBRE DE LA EMPRESA', SUM(valor_factura) AS '$ TOTAL DE LA FACTURA'\n"
+                + "FROM factura INNER JOIN empresa ON empresa.idempresa = factura.empresa_idempresa\n"
+                + "GROUP BY empresa_idempresa";
+
         try {
             conn = conexiondb.ConexionDB.GetConnection();
             Statement st = conn.createStatement();
@@ -405,6 +439,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             int numColumna = rsmd.getColumnCount();
 
             DefaultTableModel modelo = new DefaultTableModel();
+
             this.jTable2.setModel(modelo);
 
             for (int i = 1; i <= numColumna; i++) {
@@ -418,23 +453,34 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                     fila[j] = rs.getObject(j + 1);
                 }
                 modelo.addRow(fila);
+                JTableHeader th;
+                th = jTable2.getTableHeader();
+                Font fuente = new Font("Tahoma", Font.BOLD, 20);
+                th.setFont(fuente);
+                jTable2.setFont(new java.awt.Font("Tahoma", 0, 18));
+                jTable2.setEnabled(false);
             }
         } catch (SQLException se) {
             JOptionPane.showMessageDialog(null, se);
         }
+        total();
     }
+//seleccionar proveedor
 
-    private void jList1MousePressed(java.awt.event.MouseEvent evt) {
+    public void jList1MousePressed(java.awt.event.MouseEvent evt) {
         Empresa emp = (Empresa) this.jList1.getSelectedValue();
         if (emp != null) {
             VentanaFactura vf = new VentanaFactura();
             vf.setVisible(true);
             vf.setLocationRelativeTo(null);
             vf.jLabel1.setText(emp.getNombre());
+            this.setVisible(false);
+            vf.jTextField6.setText(emp.getIdempresa());
+
         }
     }
 
-    private void jList1KeyPressed(java.awt.event.KeyEvent evt) {
+    public void jList1KeyPressed(java.awt.event.KeyEvent evt) {
         int key = evt.getKeyCode();
         if (key == KeyEvent.VK_ENTER) {
             Toolkit.getDefaultToolkit().beep();
@@ -444,7 +490,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 vf.setVisible(true);
                 vf.setLocationRelativeTo(null);
                 vf.jLabel1.setText(emp.getNombre());
+                vf.jTextField6.setText(emp.getIdempresa());
+                this.setVisible(false);
             }
         }
     }
+
 }

@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package facturacion;
+package main;
 
 import diseño.VentanaLogin;
 import diseño.VentanaPrincipal;

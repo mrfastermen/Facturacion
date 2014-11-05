@@ -18,6 +18,7 @@ import java.sql.Statement;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import modelo.vo.Empresa;
+import modelo.vo.Factura;
 
 public class ConexionDB {
     
@@ -74,4 +75,31 @@ public class ConexionDB {
         return empresa;
     }
     
+    public static Vector<Factura> insertarFactura(String consulta){
+        Vector<Factura> factura = new Vector<Factura>();
+        Factura fact = null;
+        
+        if (conexion == null)
+            GetConnection();
+        try {
+            st = conexion.createStatement();
+            int insert = st.executeUpdate(consulta);
+            
+            while(rs.next()){
+                fact = new Factura();
+                fact.setIdfacturacion(rs.getString(1));
+                fact.setEstado(rs.getString(2));
+                fact.setFecha_factura(rs.getString(3));
+                fact.setValor_factura(rs.getString(4));
+                fact.setNum_factura(rs.getString(5));
+                fact.setEmpresa_idempresa(rs.getString(6));
+                factura.add(fact);
+            }
+            st.close();
+            rs.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return factura;
+    }
 }
