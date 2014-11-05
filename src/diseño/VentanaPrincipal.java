@@ -6,6 +6,7 @@
 package diseño;
 
 import java.awt.Font;
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -73,6 +74,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         totalFactura();
     }
+    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
@@ -403,7 +405,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 jTextField2.setText("");
                 jTextField3.setText("");
                 jTabbedPane1.requestFocus();
-            } catch (Exception ex) {
+            } catch (HeadlessException | SQLException ex) {
                 JOptionPane.showMessageDialog(null, ex);
             }
         } else {
@@ -427,7 +429,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }
 
     public void totalFactura() {
-        String sql = "SELECT empresa.nombre AS 'NOMBRE DE LA EMPRESA', SUM(valor_factura) AS '$ TOTAL DE LA FACTURA'\n"
+        String sql = "SELECT empresa.nombre AS 'NOMBRE DEL PROVEEDOR', SUM(valor_factura) AS '$ TOTAL DE LA FACTURA'\n"
                 + "FROM factura INNER JOIN empresa ON empresa.idempresa = factura.empresa_idempresa\n"
                 + "GROUP BY empresa_idempresa";
 
@@ -476,6 +478,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             vf.jLabel1.setText(emp.getNombre());
             this.setVisible(false);
             vf.jTextField6.setText(emp.getIdempresa());
+            vf.leerDatos();
 
         }
     }

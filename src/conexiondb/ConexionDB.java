@@ -33,7 +33,7 @@ public class ConexionDB {
             Class.forName("com.mysql.jdbc.Driver");
             String servidor = "jdbc:mysql://localhost/compisdb";
             String usuarioDB = "root";
-            String passwordDB = "root";
+            String passwordDB = "1234";
             conexion = DriverManager.getConnection(servidor, usuarioDB, passwordDB);
         } catch (ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(null, ex, "Error1 en la Conexión con la BD " + ex.getMessage(), JOptionPane.ERROR_MESSAGE);
