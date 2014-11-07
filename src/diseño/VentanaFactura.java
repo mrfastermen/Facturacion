@@ -17,34 +17,44 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
-import javax.swing.JOptionPane;
-import javax.swing.JTable;
+import java.util.GregorianCalendar;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-import modelo.vo.Empresa;
-import modelo.vo.Factura;
 
 public class VentanaFactura extends javax.swing.JFrame {
 
     Connection conn;
+    Statement st;
     VentanaPrincipal principal = new VentanaPrincipal();
-    String valorglobal;
+    public String valorglobal;
+    public String valorglobal2;
+    public String valorglobal3;
 
     public VentanaFactura() {
+        if (EXIT_ON_CLOSE == 0) {
+            principal.setVisible(true);
+        }
         initComponents();
+
         jButton4.setToolTipText("Actualizar Base de Datos");
 
         jTable1.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent Mouse_evt) {
-                JTable table = (JTable) Mouse_evt.getSource();
-                Point point = Mouse_evt.getPoint();
-                int row = table.rowAtPoint(point);
-                if (Mouse_evt.getClickCount() == 1) {
-                    jTextField3.setText("" + jTable1.getValueAt(jTable1.getSelectedRow(), 0));
-                    String valortabla = (String) jTable1.getValueAt(jTable1.getSelectedRow(), 2);
-                    valorglobal = valortabla;
-                    System.out.println(valortabla);
+                try {
+                    JTable table = (JTable) Mouse_evt.getSource();
+                    Point point = Mouse_evt.getPoint();
+                    int row = table.rowAtPoint(point);
+                    if (Mouse_evt.getClickCount() == 1) {
+                        jTextField3.setText("" + jTable1.getValueAt(jTable1.getSelectedRow(), 0));
+                        String valortablas = (String) jTable1.getValueAt(jTable1.getSelectedRow(), 2);
+                        valorglobal = valortablas;
+                        String valortablas2 = (String) jTable1.getValueAt(jTable1.getSelectedRow(), 3);
+                        valorglobal3 = valortablas2;
+                    }
+                } catch (Exception e) {
                 }
             }
         });
@@ -87,11 +97,12 @@ public class VentanaFactura extends javax.swing.JFrame {
         jTextArea1 = new javax.swing.JTextArea();
         jTextField6 = new javax.swing.JTextField();
         jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
 
         jMenuItem1.setText("jMenuItem1");
 
-        //setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("FACTURAS");
+        //setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+        setTitle("Editar");
         setBackground(new java.awt.Color(0, 0, 0));
         setIconImage(getIconImage());
         setResizable(false);
@@ -252,8 +263,8 @@ public class VentanaFactura extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel5.setText("N°. FACTURA A PAGAR");
 
-        jTextField3.setEditable(false);
         jTextField3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jTextField3.setEditable(false);
 
         jTextField4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
@@ -363,6 +374,15 @@ public class VentanaFactura extends javax.swing.JFrame {
             }
         });
 
+        jButton5.setBackground(new java.awt.Color(102, 102, 255));
+        jButton5.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jButton5.setText("EDITAR FACTURA");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -380,11 +400,11 @@ public class VentanaFactura extends javax.swing.JFrame {
                                 .addGroup(layout.createSequentialGroup()
                                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addGroup(layout.createSequentialGroup()
-                                                        .addComponent(jButton3)
-                                                        .addGap(0, 0, Short.MAX_VALUE))
-                                                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(jButton5)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jButton3)))
                         .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -401,8 +421,10 @@ public class VentanaFactura extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton3)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jButton3)
+                                .addComponent(jButton5))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -420,7 +442,6 @@ public class VentanaFactura extends javax.swing.JFrame {
     //AGREGAR FACTURA
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
         conn = conexiondb.ConexionDB.GetConnection();
-        Statement st;
 
         String formato = jDateChooser2.getDateFormatString();
         Date date = jDateChooser2.getDate();
@@ -460,12 +481,13 @@ public class VentanaFactura extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Llene todo los campos..!");
         }
         leerDatos();
+        principal.totalFactura();
     }
 
     //PAGAR FACTURA
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
         conn = conexiondb.ConexionDB.GetConnection();
-        Statement st;
+        boolean valoresmayor = false;
 
         String formato = jDateChooser3.getDateFormatString();
         Date date = jDateChooser3.getDate();
@@ -483,6 +505,14 @@ public class VentanaFactura extends javax.swing.JFrame {
         String idempresa = jTextField6.getText();
         String numfact = jTextField3.getText();
 
+        try {
+            if (numfact.equals("")) {
+                JOptionPane.showMessageDialog(null, "No hay facturas por pagar", "Error", 0);
+                return;
+            }
+        } catch (Exception e) {
+        }
+
         String valorpagar = jTextField4.getText();
 
         if (valorglobal.equals(valorpagar)) {
@@ -496,22 +526,38 @@ public class VentanaFactura extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, e);
             }
         } else {
-            
-            int valorg = Integer.parseInt(valorglobal);
-            int valorp = Integer.parseInt(valorpagar);
-            
+
+            int valorg = 0;
+            int valorp = 0;
+            try {
+                valorg = Integer.parseInt(valorglobal);
+                valorp = Integer.parseInt(valorpagar);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+            }
+
             if (valorp < valorg) {
-                System.out.println("es menor");
+                //System.out.println("es menor");
+                int nuevovalor = valorg - valorp;
+                //System.out.println("Nuevo valoor" + nuevovalor);
+
+                String abono = "UPDATE factura SET valor_factura = '" + nuevovalor + "' WHERE idfacturacion = '" + numfact + "'";
+
+                try {
+                    st = conn.createStatement();
+                    int inser = st.executeUpdate(abono);
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, e);
+                }
+
             } else {
                 if (valorp > valorg) {
-                    JOptionPane.showMessageDialog(null, "EL VALOR DE LA DEUDA ES MENOR..!");
+                    valoresmayor = true;
                 }
             }
         }
-        System.out.println("valor global" + valorglobal);
-        System.out.println("valor pagar" + valorpagar);
 
-        if ((valor.length() > 0) && (num.length() > 0)) {
+        if ((valor.length() > 0) && (num.length() > 0) && (valoresmayor != true)) {
             String sql = "INSERT INTO abono (fecha_pagada, valor_pagado, num_recibido, factura_idfacturacion, factura_empresa_idempresa, observacion)\n"
                     + "VALUES ('" + fecha + "', '" + valor + "', '" + num + "', '" + numfact + "', '" + idempresa + "', '" + obs + "')";
 
@@ -533,9 +579,15 @@ public class VentanaFactura extends javax.swing.JFrame {
                 }
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Llene todo los campos..!cual");
+            if (valoresmayor) {
+                JOptionPane.showMessageDialog(null, "EL VALOR DE LA DEUDA ES MENOR..!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Llene todo los campos..!cual");
+            }
         }
         leerDatos();
+        leerDatosPagos();
+        principal.totalFactura();
     }
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {
@@ -546,6 +598,50 @@ public class VentanaFactura extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {
         leerDatos();
+        leerDatosPagos();
+    }
+
+    public void leerDatosPagos() {
+        String idempresa = jTextField6.getText();
+        String sql = "SELECT factura.num_factura AS '#', fecha_pagada AS 'FECHA DE PAGO', valor_pagado AS 'VALOR PAGADO', num_recibido AS 'NUMERO RECIBIDO', observacion AS 'OBSERVACION'\n"
+                + "FROM abono INNER JOIN factura ON factura.idfacturacion = abono.factura_idfacturacion\n"
+                + "WHERE factura_empresa_idempresa='" + idempresa + "'";
+
+        try {
+            conn = conexiondb.ConexionDB.GetConnection();
+            st = conn.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int numColumna = rsmd.getColumnCount();
+
+            DefaultTableModel modelo = new DefaultTableModel();
+            this.jTable2.setModel(modelo);
+
+            for (int i = 1; i <= numColumna; i++) {
+                modelo.addColumn(rsmd.getColumnLabel(i));
+            }
+
+            while (rs.next()) {
+                Object[] fila = new Object[numColumna];
+
+                for (int j = 0; j < numColumna; j++) {
+                    fila[j] = rs.getObject(j + 1);
+                }
+                modelo.addRow(fila);
+                JTableHeader th;
+                th = jTable2.getTableHeader();
+                Font fuente = new Font("Tahoma", Font.BOLD, 16);
+                th.setFont(fuente);
+                jTable2.setFont(new java.awt.Font("Tahoma", 0, 14));
+
+                if (jTable2.getColumnModel().getColumnCount() > 0) {
+                    jTable2.getColumnModel().getColumn(0).setMinWidth(35);
+                    jTable2.getColumnModel().getColumn(0).setMaxWidth(50);
+                }
+            }
+        } catch (SQLException se) {
+            JOptionPane.showMessageDialog(null, se);
+        }
     }
 
     public void leerDatos() {
@@ -554,7 +650,7 @@ public class VentanaFactura extends javax.swing.JFrame {
                 + "FROM factura WHERE empresa_idempresa= '" + idempresa + "' AND estado='pendiente'";
         try {
             conn = conexiondb.ConexionDB.GetConnection();
-            Statement st = conn.createStatement();
+            st = conn.createStatement();
             ResultSet rs = st.executeQuery(sql);
             ResultSetMetaData rsmd = rs.getMetaData();
             int numColumna = rsmd.getColumnCount();
@@ -578,14 +674,79 @@ public class VentanaFactura extends javax.swing.JFrame {
                 Font fuente = new Font("Tahoma", Font.BOLD, 20);
                 th.setFont(fuente);
                 jTable1.setFont(new java.awt.Font("Tahoma", 0, 18));
+                if (jTable1.getColumnModel().getColumnCount() > 0) {
+                    jTable1.getColumnModel().getColumn(0).setMinWidth(35);
+                    jTable1.getColumnModel().getColumn(0).setMaxWidth(50);
+                }
             }
         } catch (SQLException se) {
             JOptionPane.showMessageDialog(null, se);
         }
     }
 
-    private void jTable1MousePressed(java.awt.event.MouseEvent evt) {
+    //validar solo numeros
+    public void jTextFieldKeyTyped(java.awt.event.KeyEvent evt) {
+        char c = evt.getKeyChar();
+        if (!Character.isDigit(c)) {
+            getToolkit().beep();
+            evt.consume();
+            //JOptionPane.showMessageDialog(this, "Digite Solo Numeros..!");
+        }
+    }
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {
+        Calendar fechaActual = new GregorianCalendar();
+        JTextField fecha = new JTextField(7);
+        JTextField valor = new JTextField(5);
+        JTextField numfact = new JTextField(5);
+        
+        fecha.setToolTipText("Año-Mes-Dia");
 
+        int anio = fechaActual.get(Calendar.YEAR);
+        int mes = fechaActual.get(Calendar.MONTH);
+        int dia = fechaActual.get(Calendar.DAY_OF_MONTH);
+        
+        fecha.setText(anio+"-"+(mes+1)+"-"+dia);
+        valor.setText(valorglobal);
+        numfact.setText(valorglobal3);
+
+        JPanel myPanel = new JPanel();
+        myPanel.add(Box.createHorizontalStrut(10)); // a spacer
+        myPanel.add(new JLabel("Fecha:"));
+        myPanel.add(fecha);
+        myPanel.add(Box.createHorizontalStrut(10)); // a spacer
+        myPanel.add(new JLabel("Valor:"));
+        myPanel.add(valor);
+        myPanel.add(Box.createHorizontalStrut(10)); // a spacer
+        myPanel.add(new JLabel("Numero Factura:"));
+        myPanel.add(numfact);
+
+        int result = JOptionPane.showConfirmDialog(null, myPanel, "Modificar Factura", JOptionPane.OK_CANCEL_OPTION);
+        String fec = fecha.getText();
+        String val = valor.getText();
+        String nfact = numfact.getText();
+        String idfact = jTextField3.getText();
+
+        if (result == JOptionPane.OK_OPTION) {
+            
+            if (!val.equals("") && (!nfact.equals(""))) {
+                String sql = "UPDATE factura SET fecha_factura = '" + fec + "', valor_factura = '" + val + "', num_factura = '" + nfact + "' WHERE idfacturacion = '" + idfact + "'";
+                try {
+                    st = conn.createStatement();
+                    int inser = st.executeUpdate(sql);
+                    JOptionPane.showMessageDialog(null, "Factura Modificada con Exito...!");
+                } catch (Exception ex) {
+                    if (fecha == null) {
+                        JOptionPane.showMessageDialog(null, "Digite Fecha..!");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Verifique Fecha ó Numero de Factura YA Exista..!");
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Llene todo los campos..!");
+            }
+            leerDatos();
+            principal.totalFactura();
+        }
     }
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {
@@ -598,6 +759,7 @@ public class VentanaFactura extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private com.toedter.calendar.JDateChooser jDateChooser2;
     private com.toedter.calendar.JDateChooser jDateChooser3;
     public javax.swing.JLabel jLabel1;

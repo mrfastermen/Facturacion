@@ -17,10 +17,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author Estudiante
- */
 public class VentanaLogin extends javax.swing.JFrame {
 
     // Variables declaration - do not modify                     
@@ -202,11 +198,6 @@ public class VentanaLogin extends javax.swing.JFrame {
         conn = conexiondb.ConexionDB.GetConnection();
         Statement st;
         ResultSet rs;
-        /*
-         if(conn != null){
-         JOptionPane.showMessageDialog(null, "Conexion Realizada..");
-         }
-         */
         String username = jTextField1.getText();
         String password = jPasswordField1.getText();
 
@@ -243,11 +234,6 @@ public class VentanaLogin extends javax.swing.JFrame {
             conn = conexiondb.ConexionDB.GetConnection();
             Statement st;
             ResultSet rs;
-            /*
-             if(conn != null){
-             JOptionPane.showMessageDialog(null, "Conexion Realizada..");
-             }
-             */
             String username = jTextField1.getText();
             String password = jPasswordField1.getText();
 
